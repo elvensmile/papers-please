@@ -8,13 +8,16 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
+import { UiLanguageProvider } from "@/components/UiLanguageProvider";
 
 const theme = createTheme({
   primaryColor: "teal",
   defaultRadius: "md",
-  fontFamily: '"Avenir Next", Avenir, "Segoe UI", sans-serif',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif',
   headings: {
-    fontFamily: 'Georgia, "Iowan Old Style", serif'
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif'
   }
 });
 
@@ -36,10 +39,12 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme}>
-        <Notifications position="top-right" />
-        {children}
-      </MantineProvider>
+      <UiLanguageProvider>
+        <MantineProvider theme={theme}>
+          <Notifications position="top-right" />
+          {children}
+        </MantineProvider>
+      </UiLanguageProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

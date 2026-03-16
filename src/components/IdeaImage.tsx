@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { Alert, Paper, Stack, Text } from "@mantine/core";
 import { IconPhoto, IconPhotoOff } from "@tabler/icons-react";
+import { useTranslation } from "@/components/UiLanguageProvider";
 
 type IdeaImageProps = {
   imageUrl: string | null;
@@ -13,27 +16,26 @@ export function IdeaImage({
   imageError,
   startupName
 }: IdeaImageProps) {
+  const t = useTranslation();
+
   return (
-    <Paper className="section-card" p={{ base: "lg", md: "xl" }} radius="xl">
+    <Paper
+      className="section-card"
+      p={{ base: "lg", md: "xl" }}
+      radius={20}
+    >
       <Stack gap="lg">
         <Stack gap={4}>
-          <Text fw={700}>Concept image</Text>
-          <Text c="dimmed">
-            A visual direction for {startupName}, generated after the winning idea is
-            selected.
+          <Text fw={600} fz="sm">
+            {t("image.title")}
+          </Text>
+          <Text c="dimmed" fz="sm">
+            {t("image.description", { startupName })}
           </Text>
         </Stack>
 
         {imageUrl != null ? (
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              aspectRatio: "3 / 2",
-              overflow: "hidden",
-              borderRadius: 24
-            }}
-          >
+          <div className="image-frame">
             <Image
               src={imageUrl}
               alt={`${startupName} concept illustration`}
@@ -47,10 +49,16 @@ export function IdeaImage({
           <Alert
             color="gray"
             variant="light"
-            radius="lg"
-            icon={imageError == null ? <IconPhoto size={18} /> : <IconPhotoOff size={18} />}
+            radius="md"
+            icon={
+              imageError == null ? (
+                <IconPhoto size={16} stroke={1.5} />
+              ) : (
+                <IconPhotoOff size={16} stroke={1.5} />
+              )
+            }
           >
-            {imageError ?? "No image was returned, so this section is using a text-only fallback."}
+            <Text fz="sm">{imageError ?? t("image.fallback")}</Text>
           </Alert>
         )}
       </Stack>

@@ -1,4 +1,7 @@
+"use client";
+
 import { Badge, Divider, Group, Paper, Stack, Text } from "@mantine/core";
+import { useTranslation } from "@/components/UiLanguageProvider";
 import type { RankedStartup, StartupCandidate } from "@/types/analysis";
 
 type StartupCardProps = {
@@ -19,65 +22,107 @@ function scoreTone(totalScore: number) {
 }
 
 export function StartupCard({ candidate, ranking }: StartupCardProps) {
+  const t = useTranslation();
+
   return (
-    <Paper className="section-card" p="lg" radius="xl">
+    <Paper
+      p="lg"
+      radius={16}
+      style={{
+        background: "var(--surface-soft)",
+        border: "1px solid var(--surface-border)",
+        transition: "all var(--transition)"
+      }}
+    >
       <Stack gap="md">
         <Group justify="space-between" align="flex-start">
-          <Stack gap={4}>
-            <Text fw={800} fz="lg">
+          <Stack gap={2}>
+            <Text fw={700} fz="md" lts={-0.2}>
               {candidate.name}
             </Text>
-            <Text c="dimmed">{candidate.description}</Text>
+            <Text c="dimmed" fz="sm" lh={1.5}>
+              {candidate.description}
+            </Text>
           </Stack>
           {ranking != null ? (
-            <Badge color={scoreTone(ranking.totalScore)} variant="light" size="lg">
-              Score {ranking.totalScore}
+            <Badge
+              color={scoreTone(ranking.totalScore)}
+              variant="light"
+              size="md"
+              radius="sm"
+            >
+              {t("startups.score", { score: ranking.totalScore })}
             </Badge>
           ) : null}
         </Group>
 
-        <Stack gap={6}>
-          <Text fw={700}>Problem</Text>
-          <Text c="dimmed">{candidate.problem}</Text>
+        <Stack gap={4}>
+          <Text fw={600} fz="xs" tt="uppercase" lts={0.5} c="dimmed">
+            {t("startups.problem")}
+          </Text>
+          <Text fz="sm" lh={1.6}>
+            {candidate.problem}
+          </Text>
         </Stack>
 
-        <Stack gap={6}>
-          <Text fw={700}>Solution</Text>
-          <Text c="dimmed">{candidate.solution}</Text>
+        <Stack gap={4}>
+          <Text fw={600} fz="xs" tt="uppercase" lts={0.5} c="dimmed">
+            {t("startups.solution")}
+          </Text>
+          <Text fz="sm" lh={1.6}>
+            {candidate.solution}
+          </Text>
         </Stack>
 
-        <Group gap="xs">
+        <Group gap={6}>
           {candidate.customers.map((customer) => (
-            <Badge key={customer} variant="light" color="dark">
+            <Badge key={customer} variant="light" color="gray" size="sm" radius="sm">
               {customer}
             </Badge>
           ))}
         </Group>
 
-        <Divider />
+        <Divider color="rgba(0,0,0,0.05)" />
 
-        <Stack gap={6}>
-          <Text fw={700}>Business model</Text>
-          <Text c="dimmed">{candidate.businessModel}</Text>
+        <Stack gap={4}>
+          <Text fw={600} fz="xs" tt="uppercase" lts={0.5} c="dimmed">
+            {t("startups.businessModel")}
+          </Text>
+          <Text fz="sm" lh={1.6}>
+            {candidate.businessModel}
+          </Text>
         </Stack>
 
-        <Stack gap={6}>
-          <Text fw={700}>Why now</Text>
-          <Text c="dimmed">{candidate.whyNow}</Text>
+        <Stack gap={4}>
+          <Text fw={600} fz="xs" tt="uppercase" lts={0.5} c="dimmed">
+            {t("startups.whyNow")}
+          </Text>
+          <Text fz="sm" lh={1.6}>
+            {candidate.whyNow}
+          </Text>
         </Stack>
 
         {ranking != null ? (
           <>
-            <Divider />
-            <Stack gap={6}>
-              <Text fw={700}>Improved positioning</Text>
-              <Text c="dimmed">{ranking.improvedPositioning}</Text>
+            <Divider color="rgba(0,0,0,0.05)" />
+            <Stack gap={4}>
+              <Text fw={600} fz="xs" tt="uppercase" lts={0.5} c="dimmed">
+                {t("startups.improvedPositioning")}
+              </Text>
+              <Text fz="sm" lh={1.6}>
+                {ranking.improvedPositioning}
+              </Text>
             </Stack>
-            <Stack gap={6}>
-              <Text fw={700}>Key risks</Text>
+            <Stack gap={4}>
+              <Text fw={600} fz="xs" tt="uppercase" lts={0.5} c="dimmed">
+                {t("startups.keyRisks")}
+              </Text>
               {ranking.risks.map((risk) => (
-                <Text c="dimmed" key={risk}>
-                  • {risk}
+                <Text fz="sm" lh={1.6} key={risk}>
+                  <Text span c="dimmed" fz="sm">
+                    &bull;
+                  </Text>{" "}
+                  {risk}
                 </Text>
               ))}
             </Stack>
