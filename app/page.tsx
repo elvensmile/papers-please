@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Group,
+  Modal,
   Paper,
   SegmentedControl,
   SimpleGrid,
@@ -18,11 +19,11 @@ import {
   IconArrowRight,
   IconFileAnalytics,
   IconLanguage,
-  IconLoader2,
   IconRocket,
   IconSparkles
 } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AnalysisLoadingCard } from "@/components/AnalysisLoadingCard";
 import { BestStartupHero } from "@/components/BestStartupHero";
 import { FeasibilityRadar } from "@/components/FeasibilityRadar";
 import { IdeaImage } from "@/components/IdeaImage";
@@ -54,6 +55,8 @@ function mergeCandidatesWithRanking(
 
 export default function HomePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const loadingCardRef = useRef<HTMLDivElement | null>(null);
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
   const t = useTranslation();
   const { language, setLanguage } = useUiLanguage();
   const {
@@ -80,6 +83,35 @@ export default function HomePage() {
     await mutateAsync(selectedFile);
   };
 
+  useEffect(() => {
+    if (!isAnalyzing || loadingCardRef.current == null) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      const rect = loadingCardRef.current?.getBoundingClientRect();
+
+      if (rect == null) {
+        return;
+      }
+
+      window.scrollTo({
+        top: window.scrollY + rect.top - 88,
+        behavior: "smooth"
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [isAnalyzing]);
+
+  useEffect(() => {
+    if (isError && error?.code === "UPLOAD_LIMIT_REACHED") {
+      setIsLimitModalOpen(true);
+    }
+  }, [error?.code, isError]);
+
   const heroSteps = [
     {
       title: t("hero.steps.analysis.title"),
@@ -98,8 +130,40 @@ export default function HomePage() {
     }
   ];
 
+  const sampleFiles = [
+    {
+      label: "AI Test 1",
+      url: "/examples/ai_test_1.pdf",
+      fileName: "ai_test_1.pdf"
+    },
+    {
+      label: "Cancer Test 2",
+      url: "/examples/cancer_test_2.pdf",
+      fileName: "cancer_test_2.pdf"
+    }
+  ];
+
   return (
     <div className="app-shell">
+      <Modal
+        opened={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+        title={t("upload.limitModalTitle")}
+        centered
+        radius="xl"
+      >
+        <Stack gap="md">
+          <Text size="sm" lh={1.6}>
+            {t("upload.limitModalBody")}
+          </Text>
+          <Group justify="flex-end">
+            <Button radius="xl" color="teal" onClick={() => setIsLimitModalOpen(false)}>
+              {t("upload.limitModalClose")}
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+
       <header className="topbar-shell">
         <Container size="xl">
           <div className="topbar-inner">
@@ -269,9 +333,10 @@ export default function HomePage() {
                 disabled={isAnalyzing}
                 onFileSelect={setSelectedFile}
                 selectedFile={selectedFile}
+                sampleFiles={sampleFiles}
               />
 
-              {isError ? (
+              {isError && error?.code !== "UPLOAD_LIMIT_REACHED" ? (
                 <Alert
                   color="red"
                   radius="lg"
@@ -296,40 +361,9 @@ export default function HomePage() {
           </Paper>
 
           {isAnalyzing ? (
-            <Paper
-              className="section-card"
-              p={{ base: "lg", md: "xl" }}
-              radius={20}
-            >
-              <Group gap="md">
-                <ThemeIcon variant="light" color="teal" size={40} radius="md">
-                  <IconLoader2 size={20} className="pulse-dot" />
-                </ThemeIcon>
-                <Stack gap={2}>
-                  <Text fw={600} fz="sm">
-                    {t("upload.loadingTitle")}
-                  </Text>
-                  <Text c="dimmed" fz="sm">
-                    {t("upload.loadingCopy")}
-                  </Text>
-                </Stack>
-              </Group>
-              <Group gap="sm" mt="md">
-                <div
-                  className="loading-shimmer"
-                  style={{ height: 12, width: "70%", borderRadius: 6 }}
-                />
-                <div
-                  className="loading-shimmer"
-                  style={{
-                    height: 12,
-                    width: "45%",
-                    borderRadius: 6,
-                    animationDelay: "0.15s"
-                  }}
-                />
-              </Group>
-            </Paper>
+            <div ref={loadingCardRef}>
+              <AnalysisLoadingCard />
+            </div>
           ) : null}
 
           {result != null ? (

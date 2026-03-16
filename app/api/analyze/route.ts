@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ACCEPTED_PDF_MIME_TYPES, MAX_PDF_SIZE_BYTES } from "@/config/constants";
+import { getClientIp, registerUploadAttempt } from "@/server/uploadRateLimit";
 import { analyzePaper } from "@/services/paperService";
 
 export async function POST(request: Request) {
@@ -25,6 +26,27 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "The PDF is too large. Please upload a file under 20MB." },
         { status: 400 }
+      );
+    }
+
+    const clientIp = getClientIp(request.headers);
+    const rateLimitResult = registerUploadAttempt(clientIp);
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        {
+          error:
+            "It looks like you're enjoying the app. Email me at nyriabova@gmail.com to keep going.",
+          code: "UPLOAD_LIMIT_REACHED"
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(
+              Math.max(60, Math.ceil(rateLimitResult.retryAfterMs / 1000))
+            )
+          }
+        }
       );
     }
 

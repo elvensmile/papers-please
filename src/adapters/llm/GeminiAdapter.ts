@@ -110,6 +110,31 @@ function stripMarkdownFences(value: string) {
   return value.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
 }
 
+function extractJsonObject(value: string) {
+  const firstBrace = value.indexOf("{");
+  const lastBrace = value.lastIndexOf("}");
+
+  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+    return value.trim();
+  }
+
+  return value.slice(firstBrace, lastBrace + 1).trim();
+}
+
+function removeTrailingCommas(value: string) {
+  return value.replace(/,\s*([}\]])/g, "$1");
+}
+
+function quoteBareKeys(value: string) {
+  return value.replace(/([{,]\s*)([A-Za-z_][A-Za-z0-9_]*)(\s*:)/g, '$1"$2"$3');
+}
+
+function normalizeSmartQuotes(value: string) {
+  return value
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'");
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -134,16 +159,31 @@ function clampScore(value: unknown) {
 
 function parseJson<T>(raw: string): T {
   const cleaned = stripMarkdownFences(raw);
+  const attempts = [
+    cleaned,
+    extractJsonObject(cleaned),
+    removeTrailingCommas(extractJsonObject(cleaned)),
+    quoteBareKeys(removeTrailingCommas(extractJsonObject(cleaned))),
+    quoteBareKeys(removeTrailingCommas(extractJsonObject(normalizeSmartQuotes(cleaned))))
+  ];
 
-  try {
-    return JSON.parse(cleaned) as T;
-  } catch (error) {
-    throw new Error(
-      `Gemini returned malformed JSON that could not be parsed: ${
-        error instanceof Error ? error.message : "unknown parse error"
-      }`
-    );
+  let lastError: Error | null = null;
+
+  for (const attempt of attempts) {
+    try {
+      return JSON.parse(attempt) as T;
+    } catch (error) {
+      lastError =
+        error instanceof Error ? error : new Error("unknown parse error");
+    }
   }
+
+  const preview = extractJsonObject(cleaned).slice(0, 240).replace(/\s+/g, " ");
+  throw new Error(
+    `Gemini returned malformed JSON that could not be parsed: ${
+      lastError?.message ?? "unknown parse error"
+    }. Preview: ${preview}`
+  );
 }
 
 function validateStartupCandidate(value: unknown, index: number): StartupCandidate {

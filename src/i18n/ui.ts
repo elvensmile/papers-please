@@ -43,12 +43,32 @@ export const dictionaryEN = {
       "PDF only, up to 20MB. We analyze one paper at a time for a clean MVP flow.",
     analyzeButton: "Analyze paper",
     analyzeErrorTitle: "Analysis failed",
+    limitModalTitle: "Upload limit reached",
+    limitModalBody:
+      "It looks like you're enjoying the app. Email me at nyriabova@gmail.com to keep going.",
+    limitModalClose: "Close",
     emptyStateTitle: "What you will get",
     emptyStateCopy:
       "Summary, best startup recommendation, concept image, feasibility radar, ranked idea cards, and an opportunity map.",
     loadingTitle: "Building the opportunity thesis",
     loadingCopy:
-      "Reading the paper, generating startups, ranking ideas, and drafting the concept image."
+      "Reading the paper, generating startups, ranking ideas, and drafting the concept image.",
+    loadingStageLabel: "Current process",
+    loadingDetailLabel: "Now working on",
+    loadingStages: {
+      ingestion: "Reading the PDF and identifying the strongest technical signal.",
+      summary: "Summarizing the paper into a founder-friendly thesis.",
+      startups: "Generating startup ideas from the core research insight.",
+      ranking: "Comparing novelty, feasibility, monetization, and timing.",
+      imaging: "Drafting a visual concept for the most promising company."
+    },
+    loadingDetails: {
+      abstract: "Scanning the abstract and extracting the main claim.",
+      methods: "Checking methods and constraints for what can become a product.",
+      commercial: "Looking for real buyers, budgets, and adoption friction.",
+      defensibility: "Stress-testing moats, risks, and differentiation.",
+      packaging: "Turning the best concept into a polished founder narrative."
+    }
   },
   uploader: {
     invalidTitle: "Invalid file",
@@ -58,6 +78,8 @@ export const dictionaryEN = {
     helper:
       "We send the original PDF to the model adapter directly. No local text extraction is added in this MVP.",
     pdfOnly: "PDF only, maximum 20MB.",
+    sampleTitle: "Try a sample paper",
+    sampleDescription: "No paper handy? Start with one of these examples.",
     selectedSize: "{{size}} MB selected",
     clear: "Clear file"
   },
@@ -152,12 +174,32 @@ export const dictionaryJA = {
     description: "PDFのみ、最大20MB。MVPとして1回に1本の論文を解析します。",
     analyzeButton: "論文を解析",
     analyzeErrorTitle: "解析に失敗しました",
+    limitModalTitle: "アップロード上限に達しました",
+    limitModalBody:
+      "このアプリを気に入っていただけたようです。続けたい場合は nyriabova@gmail.com までメールしてください。",
+    limitModalClose: "閉じる",
     emptyStateTitle: "生成される内容",
     emptyStateCopy:
       "要約、最有力スタートアップ、コンセプト画像、実現性レーダー、順位付きアイデアカード、機会マップを表示します。",
     loadingTitle: "起業機会を構築中",
     loadingCopy:
-      "論文を読み込み、アイデアを生成し、順位付けし、コンセプト画像を作成しています。"
+      "論文を読み込み、アイデアを生成し、順位付けし、コンセプト画像を作成しています。",
+    loadingStageLabel: "進行中の工程",
+    loadingDetailLabel: "現在の作業",
+    loadingStages: {
+      ingestion: "PDFを読み取り、最も強い技術的シグナルを見つけています。",
+      summary: "論文を、起業家が理解しやすい仮説に要約しています。",
+      startups: "研究の中核インサイトから起業アイデアを生成しています。",
+      ranking: "新規性、実現性、収益性、タイミングを比較しています。",
+      imaging: "最有力案のビジュアルコンセプトを組み立てています。"
+    },
+    loadingDetails: {
+      abstract: "アブストラクトを確認し、主張の核を抽出しています。",
+      methods: "手法と制約を見て、製品化できる部分を探しています。",
+      commercial: "顧客、予算、導入障壁を見極めています。",
+      defensibility: "防御力、リスク、差別化の強さを確認しています。",
+      packaging: "最有力案を、伝わる起業ストーリーに整えています。"
+    }
   },
   uploader: {
     invalidTitle: "無効なファイルです",
@@ -167,6 +209,8 @@ export const dictionaryJA = {
     helper:
       "このMVPでは元のPDFをそのままモデルへ送信し、ローカルのテキスト抽出は行いません。",
     pdfOnly: "PDFのみ、最大20MB。",
+    sampleTitle: "サンプル論文を試す",
+    sampleDescription: "手元に論文がなくても、このサンプルですぐに試せます。",
     selectedSize: "{{size}} MB を選択中",
     clear: "ファイルをクリア"
   },

@@ -163,6 +163,31 @@ select {
   border: 1px solid var(--surface-border);
 }
 
+.upload-dropzone {
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-dropzone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.10), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(13, 148, 136, 0.10), transparent 32%);
+  pointer-events: none;
+}
+
+.upload-dropzone-active::before {
+  background:
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(13, 148, 136, 0.12), transparent 32%);
+}
+
+.upload-samples {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
 .image-frame {
   position: relative;
   width: 100%;
@@ -182,8 +207,100 @@ select {
   background: var(--surface-soft);
 }
 
+.analysis-loading-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.analysis-loading-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(13, 148, 136, 0.08), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 32%);
+  pointer-events: none;
+}
+
+.analysis-loading-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.analysis-loading-spinner {
+  animation: analysis-spin 1.2s linear infinite;
+}
+
+.analysis-loading-stage {
+  position: relative;
+  z-index: 1;
+}
+
+.analysis-loading-label {
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.analysis-loading-stage-text,
+.analysis-loading-detail-text {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.analysis-loading-stage-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.analysis-loading-track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.analysis-loading-track-step {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  transition:
+    transform var(--transition),
+    background-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.analysis-loading-track-step.is-active {
+  background: linear-gradient(90deg, var(--accent), #14b8a6);
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.10);
+  transform: scaleY(1.05);
+}
+
+.analysis-loading-track-step.is-complete {
+  background: rgba(13, 148, 136, 0.25);
+}
+
+.analysis-loading-detail {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 246, 248, 0.95));
+  border: 1px solid rgba(13, 148, 136, 0.10);
+}
+
+.analysis-loading-skeleton {
+  height: 12px;
+  border-radius: 999px;
+  flex: 1 1 0;
+}
+
 .react-flow__attribution {
   display: none;
+}
+
+@keyframes analysis-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes shimmer {
